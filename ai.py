@@ -1,21 +1,21 @@
-import pyttsx3
 import speech_recognition as sr
 import datetime
 import wikipedia
 import time
-engine = pyttsx3.init('sapi5')
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)  # Male voice
+import webbrowser
+import os
+import win32com.client
+import webbrowser
+import pyjokes
+speaker = win32com.client.Dispatch("SAPI.SpVoice")
 
 def speak(text):
-    engine.say(text)
-    engine.runAndWait()
+    speaker.Speak(text)
 
 def speak_long_text(text, chunk_size=200):
     for i in range(0, len(text), chunk_size):
         chunk = text[i:i+chunk_size]
-        engine.say(chunk)
-    engine.runAndWait()
+        speaker.Speak(chunk)
 
 def wishme():
     hour = int(datetime.datetime.now().hour)
@@ -25,21 +25,21 @@ def wishme():
         speak("Good afternoon")
     else:
         speak("Good evening")
-    speak("I am Jarvis sir. Please tell me how may I help you")
+    speak("I am Friday sir. Please tell me how may I help you")
 
 def takeCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
-        print("Listening")
+        print("Listening...")
         r.pause_threshold = 1
         audio = r.listen(source)
 
     try:
-        print("Recognizing")
+        print("Recognizing...")
         query = r.recognize_google(audio, language='en-in')
-        print(f"user said: {query}\n")
+        print(f"User said: {query}\n")
     except Exception:
-        print("Say that again please..")
+        print("Say that again please...")
         return "None"
     return query
 
@@ -58,8 +58,103 @@ if __name__ == "__main__":
             except Exception as e:
                 print("Error:", e)
                 speak("Sorry, I couldn't find any results for your query.")
+            time.sleep(5)
+            break
 
-            time.sleep(5)  # optional small pause
-            break  # break after speaking completes
-        # Add other command handlers here
+        elif 'open google' in query:
+            try:
+                speak("Opening Google, sir.")
+                webbrowser.open("https://www.google.com")
+            except Exception as e:
+                print("Error:", e)
+                speak("Sorry, I couldn't open Google.")
+            time.sleep(5)
+            break
 
+        elif 'open youtube' in query:
+            try:
+                speak("Opening YouTube, sir.")
+                webbrowser.open("https://www.youtube.com")
+            except Exception as e:
+                print("Error:", e)
+                speak("Sorry, I couldn't open YouTube.")
+            time.sleep(5)
+            break
+
+        elif 'play music' in query:
+            try:
+                speak("Playing music sir")
+                music_dir = "C:\\Users\\Administrator\\Downloads\\2nd year\\songs"
+                songs = os.listdir(music_dir)
+                print(songs)
+                os.startfile(os.path.join(music_dir, songs[0]))
+            except Exception as e:
+                print("Error:", e)
+                speak("Sorry, I couldn't play music.")
+
+        elif 'the time' in query:
+            try:
+                strTime = datetime.datetime.now().strftime('%H:%M:%S')
+                print(f'Telling time: {strTime}')
+                speak(f'Sir, the time is {strTime}')
+            except Exception as e:
+                print('Error:', e)
+                speak("Sorry, I couldn't tell the time.")
+        elif 'open code' in query:
+            try:
+                codePath="C:\\Users\\Administrator\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+                os.startfile(codePath)
+            except Exception as e:
+                print('Error:', e)
+                speak("Sorry, I couldn't open the code.")
+                
+        elif 'email to krish' in query:
+            try:
+                speak("What should I say?")
+                content = takeCommand()
+                if content.lower() == "none" or content.strip() == "":
+                    speak("Sorry sir, I didn't catch that message.")
+                else:
+                    to = "krishshah062021@gmail.com"  # <-- replace with your actual email
+                    speak("Opening Gmail to send the email.")
+                    webbrowser.open(f"https://mail.google.com/mail/?view=cm&fs=1&to={to}&su=Message%20from%20Friday&body={content}")
+                    speak("Your message is ready in Gmail, sir. Please click send.")
+            except Exception as e:
+                print("Error:", e)
+                speak("Sorry sir, I couldn't open Gmail or send the email.")
+           
+
+        elif 'shutdown the system' in query:
+            try:
+                speak("Shutting down the system, sir.")
+                os.system("shutdown /s /t 5")
+            except Exception as e:
+                print("Error:",e)
+                speak("Sorry sir ,I wasn’t able to shutdown the system")
+            
+        
+        elif 'restart the system' in query:
+            try:
+                speak("restarting the system ,sir")
+                os.system("shutdown /r /t 5")
+            except Exception as e:
+                print("Error:",e)
+                speak("Sorry sir ,I wasn’t able to restart the system")
+
+        elif 'lock the system' in query:
+            try:
+                speak("locking the system ,sir")
+                os.system("rundll32.exe user32.dll,LockWorkStation")
+            except Exception as e:
+                print("Error:",e)
+                speak("Sorry sir ,I wasn’t able to lock the system")
+
+        elif 'tell a joke' in query:
+            try: 
+                joke = pyjokes.get_joke()
+                speak(joke)
+            except Exception as e:
+                print("Error:",e)
+                speak("Sorry sir ,I can't tell a joke")
+        else:  
+            speak("Sorry sir, I didn't understand that command.")
