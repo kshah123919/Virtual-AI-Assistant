@@ -1,1 +1,1 @@
-<b>Virtual AI assistant<\b>
+<b>Virtual AI assistant</b>
