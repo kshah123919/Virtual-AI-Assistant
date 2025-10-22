@@ -42,7 +42,13 @@ def takeCommand():
         print("Say that again please...")
         return "None"
     return query
-
+def calculate(expression):
+    try:
+        expression=expression.replace("plus","+").replace("minus","-").replace("times","*").replace("divided by","/")
+        result=eval(expression,{"__builtins__":None},{})
+        return f"The result is {result}"
+    except Exception as e:
+        return "Sorry sir,I couldn't calculate that."
 if __name__ == "__main__":
     wishme()
     while True:
@@ -156,5 +162,12 @@ if __name__ == "__main__":
             except Exception as e:
                 print("Error:",e)
                 speak("Sorry sir ,I can't tell a joke")
+        elif 'calculate' in query:
+                speak("Please say the math expression you want to calculate ")
+                expression=takeCommand().lower()
+                expression=expression.replace("calculate", "").strip()
+                result=calculate(expression)
+                print(result)
+                speak(result)
         else:  
             speak("Sorry sir, I didn't understand that command.")
