@@ -142,7 +142,7 @@ if __name__ == "__main__":
         elif 'restart the system' in query:
             try:
                 speak("restarting the system ,sir")
-                os.system("shutdown /r /t 5")
+                os.system("restart /r /t 5")
             except Exception as e:
                 print("Error:",e)
                 speak("Sorry sir ,I wasn’t able to restart the system")
